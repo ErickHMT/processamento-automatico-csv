@@ -1,16 +1,16 @@
 package com.sincronizacaoreceita.model;
 
-public class ReceitaBean {
+public class ContaBean {
     private String agencia;
     private String conta;
     private double saldo;
     private String status;
     private boolean resultado;
 
-    public ReceitaBean() {
+    public ContaBean() {
 	}
 
-	public ReceitaBean(String agencia, String conta, double saldo, String status) {
+	public ContaBean(String agencia, String conta, double saldo, String status) {
 		this.agencia = agencia;
 		this.conta = conta;
 		this.saldo = saldo;

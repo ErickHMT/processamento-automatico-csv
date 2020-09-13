@@ -25,7 +25,7 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.sincronizacaoreceita.ReceitaService;
 import com.sincronizacaoreceita.SincronizacaoreceitaApplication;
 import com.sincronizacaoreceita.model.CsvConta;
-import com.sincronizacaoreceita.model.ReceitaBean;
+import com.sincronizacaoreceita.model.ContaBean;
 
 @Service
 public class CsvContaService {
@@ -68,12 +68,13 @@ public class CsvContaService {
 	}
 
 	public void escreveArquivoCsv(List<CsvConta> infoContas) {
-		List<ReceitaBean> resultadoList = realizarProcessamento(infoContas);
+		List<ContaBean> resultadoList = realizarProcessamento(infoContas);
 		var filePathNovoArquivo = Paths.get(filePath.getParent().toString() + "/" + NOME_ARQUIVO_FINAL);
 
 		try {
 			Writer writer = Files.newBufferedWriter(filePathNovoArquivo);
-			StatefulBeanToCsv<ReceitaBean> beanToCsv = new StatefulBeanToCsvBuilder<ReceitaBean>(writer).withSeparator(CSV_SEPARATOR).withQuotechar(CSVWriter.NO_QUOTE_CHARACTER).build();
+
+			StatefulBeanToCsv<ContaBean> beanToCsv = new StatefulBeanToCsvBuilder<ContaBean>(writer).withSeparator(CSV_SEPARATOR).withQuotechar(CSVWriter.NO_QUOTE_CHARACTER).build();
 			beanToCsv.write(resultadoList);
 
 			writer.close();
@@ -88,8 +89,8 @@ public class CsvContaService {
 	 * @param infoContas
 	 * @return
 	 */
-	private List<ReceitaBean> realizarProcessamento(List<CsvConta> infoContas) {
-		List<ReceitaBean> resultadoList = new ArrayList<>();
+	private List<ContaBean> realizarProcessamento(List<CsvConta> infoContas) {
+		List<ContaBean> resultadoList = new ArrayList<>();
 		
 		try {
 			logger.info("Realizando geração do arquivo final...");
@@ -98,7 +99,7 @@ public class CsvContaService {
 					double saldoFormatado = Double.parseDouble(receita.getSaldo().replace(',', '.'));
 					String contaFormatada = receita.getConta().replace("-", "");
 
-					var itemProcessado = new ReceitaBean(receita.getAgencia(), receita.getConta(), saldoFormatado, receita.getStatus());
+					var itemProcessado = new ContaBean(receita.getAgencia(), receita.getConta(), saldoFormatado, receita.getStatus());
 	
 					boolean resultado = getReceitaService().atualizarConta(receita.getAgencia(), contaFormatada, saldoFormatado, receita.getStatus());
 					itemProcessado.setResultado(resultado);			
