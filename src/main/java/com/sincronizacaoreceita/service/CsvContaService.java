@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import com.opencsv.CSVWriter;
@@ -22,7 +21,6 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
-import com.sincronizacaoreceita.ReceitaService;
 import com.sincronizacaoreceita.SincronizacaoreceitaApplication;
 import com.sincronizacaoreceita.model.CsvConta;
 import com.sincronizacaoreceita.model.ContaBean;
@@ -35,14 +33,9 @@ public class CsvContaService {
 	public static final String NOME_ARQUIVO_FINAL = "resultado.csv";
 	public static final char CSV_SEPARATOR = ';';
 	private Path filePath;
-	
-	@Bean
-	public ReceitaService getReceitaService(){
-		return new ReceitaService();
-	}
 
 	/**
-	 * Realiza leitura do arquivo csv
+	 * Realiza leitura do arquivo csv.
 	 * 
 	 * @param fileName
 	 * @return
@@ -67,52 +60,26 @@ public class CsvContaService {
 		return infoContas;
 	}
 
-	public void escreveArquivoCsv(List<CsvConta> infoContas) {
-		List<ContaBean> resultadoList = realizarProcessamento(infoContas);
-		var filePathNovoArquivo = Paths.get(filePath.getParent().toString() + "/" + NOME_ARQUIVO_FINAL);
-
-		try {
-			Writer writer = Files.newBufferedWriter(filePathNovoArquivo);
-
-			StatefulBeanToCsv<ContaBean> beanToCsv = new StatefulBeanToCsvBuilder<ContaBean>(writer).withSeparator(CSV_SEPARATOR).withQuotechar(CSVWriter.NO_QUOTE_CHARACTER).build();
-			beanToCsv.write(resultadoList);
-
 			writer.close();
-		} catch(IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	/**
-	 * Realiza processamento das informaçoes através do serviço da receita
+	 * Gera arquivo csv através da lista de {@link ContaBean} informada.
 	 * 
 	 * @param infoContas
-	 * @return
 	 */
-	private List<ContaBean> realizarProcessamento(List<CsvConta> infoContas) {
-		List<ContaBean> resultadoList = new ArrayList<>();
-		
 		try {
-			logger.info("Realizando geração do arquivo final...");
+	public void escreveArquivoCsv(List<ContaBean> infoContas) {
+		var filePathNovoArquivo = Paths.get(filePath.getParent().toString() + "/" + NOME_ARQUIVO_FINAL);
 
-			for(CsvConta receita: infoContas) {
-					double saldoFormatado = Double.parseDouble(receita.getSaldo().replace(',', '.'));
-					String contaFormatada = receita.getConta().replace("-", "");
+			logger.info("Gerando arquivo final...");
 
-					var itemProcessado = new ContaBean(receita.getAgencia(), receita.getConta(), saldoFormatado, receita.getStatus());
-	
-					boolean resultado = getReceitaService().atualizarConta(receita.getAgencia(), contaFormatada, saldoFormatado, receita.getStatus());
-					itemProcessado.setResultado(resultado);			
-					resultadoList.add(itemProcessado);
-	
-			}
-			
+			StatefulBeanToCsv<ContaBean> beanToCsv = new StatefulBeanToCsvBuilder<ContaBean>(writer).withSeparator(CSV_SEPARATOR).withQuotechar(CSVWriter.NO_QUOTE_CHARACTER).build();
+			beanToCsv.write(infoContas);
+
 			logger.info("Arquivo gerado com sucesso!");
-		} catch (RuntimeException | InterruptedException e) {
-			logger.info("Falha ao gerar arquivo!");
+		} catch(IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+			logger.error("Falha ao gerar arquivo!");
 			e.printStackTrace();
 		}
-		
-		return resultadoList;
+
 	}
 }
