@@ -10,11 +10,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.sincronizacaoreceita.model.CsvConta;
+import com.sincronizacaoreceita.model.ContaBean;
 import com.sincronizacaoreceita.service.CsvContaService;
 import com.sincronizacaoreceita.service.SincronizacaoReceitaService;
-
-import static java.lang.System.exit;
 
 @SpringBootApplication
 public class SincronizacaoreceitaApplication implements CommandLineRunner {
@@ -38,15 +36,14 @@ public class SincronizacaoreceitaApplication implements CommandLineRunner {
         if (args.length > 0) {
         	String fileName = args[0];
 
-        	List<CsvConta> infoContas = csvContaService.leArquivoCsv(fileName);
-        	List<CsvConta> resultadoList = sincronizacaoReceitaService.realizarProcessamento(infoContas);
+        	List<ContaBean> contaBeanList = csvContaService.leArquivoCsv(fileName);
+        	List<ContaBean> resultadoList = sincronizacaoReceitaService.realizarSincronizacao(contaBeanList);
+
         	csvContaService.escreveArquivoCsv(resultadoList);
 
         } else {
         	logger.error("Nome do arquivo deve ser informado \"java -jar <example>.jar ./<file-name>.csv\"");
         }
-        
-        exit(0);
 	}
 
 }

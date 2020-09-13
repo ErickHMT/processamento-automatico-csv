@@ -22,7 +22,7 @@ import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.sincronizacaoreceita.SincronizacaoreceitaApplication;
-import com.sincronizacaoreceita.model.CsvConta;
+import com.sincronizacaoreceita.model.ContaBean;
 import com.sincronizacaoreceita.model.CustomMappingCsvContaBean;
 
 @Service
@@ -40,14 +40,14 @@ public class CsvContaService {
 	 * @param fileName
 	 * @return
 	 */
-	public List<CsvConta> leArquivoCsv(String fileName) {
-		List<CsvConta> infoContas = new ArrayList<>();
+	public List<ContaBean> leArquivoCsv(String fileName) {
+		List<ContaBean> infoContas = new ArrayList<>();
 		filePath = Paths.get(fileName);
         
 		try (Reader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)){
 			logger.info("Realizando leitura do arquivo...");
 
-			CsvToBean<CsvConta> csvToBean = new CsvToBeanBuilder<CsvConta>(reader).withType(CsvConta.class).withSkipLines(1).withSeparator(CSV_SEPARATOR).build();
+			CsvToBean<ContaBean> csvToBean = new CsvToBeanBuilder<ContaBean>(reader).withType(ContaBean.class).withSkipLines(1).withSeparator(CSV_SEPARATOR).build();
 			infoContas = csvToBean.parse();
 
 		} catch (IOException e) {
@@ -63,16 +63,16 @@ public class CsvContaService {
 	 * 
 	 * @param infoContas
 	 */
-	public void escreveArquivoCsv(List<CsvConta> infoContas) {
+	public void escreveArquivoCsv(List<ContaBean> infoContas) {
 		var filePathNovoArquivo = Paths.get(filePath.getParent().toString() + "/" + NOME_ARQUIVO_FINAL);
 		
 		try (Writer writer = Files.newBufferedWriter(filePathNovoArquivo)) {
 			logger.info("Gerando arquivo final...");
 			
-			final CustomMappingCsvContaBean<CsvConta> mappingStrategy = new CustomMappingCsvContaBean<>();
-			mappingStrategy.setType(CsvConta.class);
+			final CustomMappingCsvContaBean<ContaBean> mappingStrategy = new CustomMappingCsvContaBean<>();
+			mappingStrategy.setType(ContaBean.class);
 
-			final StatefulBeanToCsv<CsvConta> beanToCsv = new StatefulBeanToCsvBuilder<CsvConta>(writer).withSeparator(CSV_SEPARATOR).withMappingStrategy(mappingStrategy).withQuotechar(CSVWriter.NO_QUOTE_CHARACTER).build();
+			final StatefulBeanToCsv<ContaBean> beanToCsv = new StatefulBeanToCsvBuilder<ContaBean>(writer).withSeparator(CSV_SEPARATOR).withMappingStrategy(mappingStrategy).withQuotechar(CSVWriter.NO_QUOTE_CHARACTER).build();
 			beanToCsv.write(infoContas);
 
 			logger.info("Arquivo gerado com sucesso!");

@@ -2,7 +2,7 @@ package com.sincronizacaoreceita.model;
 
 import com.opencsv.bean.CsvBindByPosition;
 
-public class CsvConta {
+public class ContaBean {
 	
 	@CsvBindByPosition(position = 0)
     private String agencia;
@@ -19,10 +19,10 @@ public class CsvConta {
 	@CsvBindByPosition(position = 4) 
     private boolean resultado;
 	
-	public CsvConta() {
+	public ContaBean() {
 	}
 
-    public CsvConta(String agencia, String conta, String saldo, String status, boolean resultado) {
+    public ContaBean(String agencia, String conta, String saldo, String status, boolean resultado) {
 		super();
 		this.agencia = agencia;
 		this.conta = conta;
