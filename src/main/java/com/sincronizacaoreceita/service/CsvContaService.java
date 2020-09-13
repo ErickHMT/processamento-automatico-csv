@@ -44,14 +44,12 @@ public class CsvContaService {
 		List<CsvConta> infoContas = new ArrayList<>();
 		filePath = Paths.get(fileName);
         
-		try {
+		try (Reader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)){
 			logger.info("Realizando leitura do arquivo...");
 
-			Reader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8);
-			CsvToBean<CsvConta> csvToBean = new CsvToBeanBuilder<CsvConta>(reader).withType(CsvConta.class).withSeparator(';').build();
+			CsvToBean<CsvConta> csvToBean = new CsvToBeanBuilder<CsvConta>(reader).withType(CsvConta.class).withSeparator(CSV_SEPARATOR).build();
 			infoContas = csvToBean.parse();
 
-			reader.close();
 		} catch (IOException e) {
 			logger.error("Falha ao realizar leitura do arquivo");
 			e.printStackTrace();
@@ -60,16 +58,15 @@ public class CsvContaService {
 		return infoContas;
 	}
 
-			writer.close();
 	/**
 	 * Gera arquivo csv através da lista de {@link ContaBean} informada.
 	 * 
 	 * @param infoContas
 	 */
-		try {
 	public void escreveArquivoCsv(List<ContaBean> infoContas) {
 		var filePathNovoArquivo = Paths.get(filePath.getParent().toString() + "/" + NOME_ARQUIVO_FINAL);
 
+		try (Writer writer = Files.newBufferedWriter(filePathNovoArquivo)) {
 			logger.info("Gerando arquivo final...");
 
 			StatefulBeanToCsv<ContaBean> beanToCsv = new StatefulBeanToCsvBuilder<ContaBean>(writer).withSeparator(CSV_SEPARATOR).withQuotechar(CSVWriter.NO_QUOTE_CHARACTER).build();
