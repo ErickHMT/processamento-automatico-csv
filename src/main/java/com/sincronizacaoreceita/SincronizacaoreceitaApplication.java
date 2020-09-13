@@ -26,6 +26,7 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import com.sincronizacaoreceita.model.CsvConta;
 
 @SpringBootApplication
 public class SincronizacaoreceitaApplication implements ApplicationRunner {

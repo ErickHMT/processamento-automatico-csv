@@ -1,11 +1,11 @@
-package com.sincronizacaoreceita;
+package com.sincronizacaoreceita.model;
 
 public class ReceitaBean {
     private String agencia;
     private String conta;
-    private double saldo; //double
+    private double saldo;
     private String status;
-    private boolean resultado; //boolean
+    private boolean resultado;
 
     public ReceitaBean() {
 	}

@@ -1,11 +1,11 @@
-package com.sincronizacaoreceita;
+package com.sincronizacaoreceita.model;
 
 public class CsvConta {
     private String agencia;
     private String conta;
     private String saldo; //double
     private String status;
-    private String itemSobrando;
+    private boolean resultado;
 
     public String getAgencia() {
 		return agencia;
@@ -38,13 +38,13 @@ public class CsvConta {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	public String getItemSobrando() {
-		return itemSobrando;
+
+	public boolean getResultado() {
+		return resultado;
 	}
 
-	public void setItemSobrando(String itemSobrando) {
-		this.itemSobrando = itemSobrando;
+	public void setResultado(boolean resultado) {
+		this.resultado = resultado;
 	}
 
 	public String toString() {
