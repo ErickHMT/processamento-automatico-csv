@@ -23,6 +23,7 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.sincronizacaoreceita.SincronizacaoreceitaApplication;
 import com.sincronizacaoreceita.model.CsvConta;
+import com.sincronizacaoreceita.model.CustomMappingCsvContaBean;
 
 @Service
 public class CsvContaService {
@@ -46,7 +47,7 @@ public class CsvContaService {
 		try (Reader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)){
 			logger.info("Realizando leitura do arquivo...");
 
-			CsvToBean<CsvConta> csvToBean = new CsvToBeanBuilder<CsvConta>(reader).withType(CsvConta.class).withSeparator(CSV_SEPARATOR).build();
+			CsvToBean<CsvConta> csvToBean = new CsvToBeanBuilder<CsvConta>(reader).withType(CsvConta.class).withSkipLines(1).withSeparator(CSV_SEPARATOR).build();
 			infoContas = csvToBean.parse();
 
 		} catch (IOException e) {
@@ -64,11 +65,14 @@ public class CsvContaService {
 	 */
 	public void escreveArquivoCsv(List<CsvConta> infoContas) {
 		var filePathNovoArquivo = Paths.get(filePath.getParent().toString() + "/" + NOME_ARQUIVO_FINAL);
-
+		
 		try (Writer writer = Files.newBufferedWriter(filePathNovoArquivo)) {
 			logger.info("Gerando arquivo final...");
+			
+			final CustomMappingCsvContaBean<CsvConta> mappingStrategy = new CustomMappingCsvContaBean<>();
+			mappingStrategy.setType(CsvConta.class);
 
-			final StatefulBeanToCsv<CsvConta> beanToCsv = new StatefulBeanToCsvBuilder<CsvConta>(writer).withSeparator(CSV_SEPARATOR).withQuotechar(CSVWriter.NO_QUOTE_CHARACTER).build();
+			final StatefulBeanToCsv<CsvConta> beanToCsv = new StatefulBeanToCsvBuilder<CsvConta>(writer).withSeparator(CSV_SEPARATOR).withMappingStrategy(mappingStrategy).withQuotechar(CSVWriter.NO_QUOTE_CHARACTER).build();
 			beanToCsv.write(infoContas);
 
 			logger.info("Arquivo gerado com sucesso!");

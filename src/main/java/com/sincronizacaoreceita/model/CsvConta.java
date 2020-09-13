@@ -1,13 +1,37 @@
 package com.sincronizacaoreceita.model;
 
-public class CsvConta {
-    private String agencia;
-    private String conta;
-    private String saldo; //double
-    private String status;
-    private boolean resultado;
+import com.opencsv.bean.CsvBindByPosition;
 
-    public String getAgencia() {
+public class CsvConta {
+	
+	@CsvBindByPosition(position = 0)
+    private String agencia;
+
+	@CsvBindByPosition(position = 1)
+    private String conta;
+
+	@CsvBindByPosition(position = 2)
+    private String saldo;
+
+	@CsvBindByPosition(position = 3)
+    private String status;
+
+	@CsvBindByPosition(position = 4) 
+    private boolean resultado;
+	
+	public CsvConta() {
+	}
+
+    public CsvConta(String agencia, String conta, String saldo, String status, boolean resultado) {
+		super();
+		this.agencia = agencia;
+		this.conta = conta;
+		this.saldo = saldo;
+		this.status = status;
+		this.resultado = resultado;
+	}
+
+	public String getAgencia() {
 		return agencia;
 	}
 
