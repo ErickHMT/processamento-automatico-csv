@@ -1,4 +1,4 @@
-package com.sincronizacaoreceita;
+package com.sincronizacaoreceita.service;
 
 import java.util.ArrayList;
 import java.util.List;
