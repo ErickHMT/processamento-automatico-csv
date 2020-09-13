@@ -32,7 +32,7 @@ public class SincronizacaoReceitaService {
 			int progresso = 1;
 			int totalItems = contas.size();
 			for(ContaBean conta: contas) {
-				logger.info("Enviando a atualização para a Receita... {}/{}", progresso, totalItems);
+				logger.info("Enviando a atualizacao para a Receita... {}/{}", progresso, totalItems);
 
 				double saldoFormatado = Double.parseDouble(conta.getSaldo().replace(',', '.'));
 				String contaFormatada = conta.getConta().replace("-", "");
@@ -43,7 +43,7 @@ public class SincronizacaoReceitaService {
 				progresso++;
 			}
 		} catch (InterruptedException e) {
-			logger.error("Falha ao enviar atualizaçao para a Receita!");
+			logger.error("Falha ao enviar atualizacao para a Receita!");
 			e.printStackTrace();
 		}
 		

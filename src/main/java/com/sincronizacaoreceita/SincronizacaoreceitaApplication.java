@@ -1,6 +1,5 @@
 package com.sincronizacaoreceita;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -31,18 +30,17 @@ public class SincronizacaoreceitaApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-        logger.info("Application started with command-line arguments: {}", Arrays.toString(args));
-        
         if (args.length > 0) {
         	String fileName = args[0];
-
-        	List<ContaBean> contaBeanList = csvContaService.leArquivoCsv(fileName);
-        	List<ContaBean> resultadoList = sincronizacaoReceitaService.realizarSincronizacao(contaBeanList);
-
-        	csvContaService.escreveArquivoCsv(resultadoList);
-
+        	
+    		List<ContaBean> contaBeanList = csvContaService.leArquivoCsv(fileName);
+    		
+    		if(contaBeanList != null) {
+	        	List<ContaBean> resultadoList = sincronizacaoReceitaService.realizarSincronizacao(contaBeanList);
+	        	csvContaService.escreveArquivoCsv(resultadoList);
+    		}
         } else {
-        	logger.error("Nome do arquivo deve ser informado \"java -jar <example>.jar ./<file-name>.csv\"");
+        	logger.error("Nome do arquivo deve ser informado como parametro. Ex: \"java -jar <exemplo>.jar <nome-arquivo>.csv\"");
         }
 	}
 
