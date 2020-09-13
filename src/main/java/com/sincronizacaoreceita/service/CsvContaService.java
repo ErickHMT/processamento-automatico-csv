@@ -23,7 +23,6 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.sincronizacaoreceita.SincronizacaoreceitaApplication;
 import com.sincronizacaoreceita.model.CsvConta;
-import com.sincronizacaoreceita.model.ContaBean;
 
 @Service
 public class CsvContaService {
@@ -63,13 +62,13 @@ public class CsvContaService {
 	 * 
 	 * @param infoContas
 	 */
-	public void escreveArquivoCsv(List<ContaBean> infoContas) {
+	public void escreveArquivoCsv(List<CsvConta> infoContas) {
 		var filePathNovoArquivo = Paths.get(filePath.getParent().toString() + "/" + NOME_ARQUIVO_FINAL);
 
 		try (Writer writer = Files.newBufferedWriter(filePathNovoArquivo)) {
 			logger.info("Gerando arquivo final...");
 
-			StatefulBeanToCsv<ContaBean> beanToCsv = new StatefulBeanToCsvBuilder<ContaBean>(writer).withSeparator(CSV_SEPARATOR).withQuotechar(CSVWriter.NO_QUOTE_CHARACTER).build();
+			final StatefulBeanToCsv<CsvConta> beanToCsv = new StatefulBeanToCsvBuilder<CsvConta>(writer).withSeparator(CSV_SEPARATOR).withQuotechar(CSVWriter.NO_QUOTE_CHARACTER).build();
 			beanToCsv.write(infoContas);
 
 			logger.info("Arquivo gerado com sucesso!");

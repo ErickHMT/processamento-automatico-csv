@@ -10,7 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.sincronizacaoreceita.model.ContaBean;
 import com.sincronizacaoreceita.model.CsvConta;
 import com.sincronizacaoreceita.service.CsvContaService;
 import com.sincronizacaoreceita.service.SincronizacaoReceitaService;
@@ -40,7 +39,7 @@ public class SincronizacaoreceitaApplication implements CommandLineRunner {
         	String fileName = args[0];
 
         	List<CsvConta> infoContas = csvContaService.leArquivoCsv(fileName);
-        	List<ContaBean> resultadoList = sincronizacaoReceitaService.realizarProcessamento(infoContas);
+        	List<CsvConta> resultadoList = sincronizacaoReceitaService.realizarProcessamento(infoContas);
         	csvContaService.escreveArquivoCsv(resultadoList);
 
         } else {

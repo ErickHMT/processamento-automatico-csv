@@ -8,9 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
-import com.sincronizacaoreceita.ReceitaService;
 import com.sincronizacaoreceita.SincronizacaoreceitaApplication;
-import com.sincronizacaoreceita.model.ContaBean;
 import com.sincronizacaoreceita.model.CsvConta;
 
 @Service
@@ -29,25 +27,21 @@ public class SincronizacaoReceitaService {
 	 * @param infoContas
 	 * @return
 	 */
-	public List<ContaBean> realizarProcessamento(List<CsvConta> infoContas) {
-		List<ContaBean> resultadoList = new ArrayList<>();
+	public List<CsvConta> realizarProcessamento(List<CsvConta> infoContas) {
 		
 		try {
-			logger.info("Enviando a atualização para a Receita...");
 
 			int progresso = 1;
+			int totalItems = infoContas.size();
 			for(CsvConta conta: infoContas) {
 				// Faz o log do progresso do processamento em relaçao ao total de itens
-				logger.info("{}/{}", progresso, infoContas.size());
+				logger.info("Enviando a atualização para a Receita... {}/{}", progresso, totalItems);
 
 				double saldoFormatado = Double.parseDouble(conta.getSaldo().replace(',', '.'));
 				String contaFormatada = conta.getConta().replace("-", "");
 
-				var itemProcessado = new ContaBean(conta.getAgencia(), conta.getConta(), saldoFormatado, conta.getStatus());
-
 				boolean resultado = getReceitaService().atualizarConta(conta.getAgencia(), contaFormatada, saldoFormatado, conta.getStatus());
-				itemProcessado.setResultado(resultado);			
-				resultadoList.add(itemProcessado);
+				conta.setResultado(resultado);			
 
 				progresso++;
 			}
@@ -56,6 +50,6 @@ public class SincronizacaoReceitaService {
 			e.printStackTrace();
 		}
 		
-		return resultadoList;
+		return infoContas;
 	}
 }
