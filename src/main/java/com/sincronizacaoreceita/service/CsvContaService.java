@@ -26,11 +26,17 @@ import com.sincronizacaoreceita.SincronizacaoreceitaApplication;
 import com.sincronizacaoreceita.model.ContaBean;
 import com.sincronizacaoreceita.model.CustomMappingCsvContaBean;
 
+/**
+ * Trata leitura e escrita de {@link ContaBean} como arquivo .csv
+ * 
+ * @author Erick Teixeira
+ *
+ */
 @Service
 public class CsvContaService {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(SincronizacaoreceitaApplication.class);
-	
+
 	public static final String NOME_ARQUIVO_FINAL = "resultado.csv";
 	public static final char CSV_SEPARATOR = ';';
 	private Path filePath;
@@ -46,20 +52,19 @@ public class CsvContaService {
 		filePath = Paths.get(fileName);
 
 		// Retorna null caso arquivo não exista
-		if(!filePath.toFile().exists()) {
+		if (!filePath.toFile().exists()) {
 			logger.error("Arquivo {} nao existe!", fileName);
 			return null;
 		}
-        
-		try (Reader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)){
+
+		try (Reader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
 			logger.info("Realizando leitura do arquivo...");
 
 			// TODO Tratar execao de formato invalido dos dados do csv (CsvRequiredFieldEmptyException)
 			CsvToBean<ContaBean> csvToBean = new CsvToBeanBuilder<ContaBean>(reader)
 					.withType(ContaBean.class)
 					.withSkipLines(1)
-					.withSeparator(CSV_SEPARATOR)
-					.build();
+					.withSeparator(CSV_SEPARATOR).build();
 
 			infoContas = csvToBean.parse();
 
@@ -67,7 +72,7 @@ public class CsvContaService {
 			logger.error("Falha ao realizar leitura do arquivo");
 			e.printStackTrace();
 		}
-		
+
 		return infoContas;
 	}
 
@@ -79,15 +84,15 @@ public class CsvContaService {
 	public void escreveArquivoCsv(List<ContaBean> infoContas) {
 
 		Path filePathNovoArquivo;
-		if(filePath.getParent() != null) {
-			filePathNovoArquivo = Paths.get(filePath.getParent().toString() + File.separator + NOME_ARQUIVO_FINAL);			
+		if (filePath.getParent() != null) {
+			filePathNovoArquivo = Paths.get(filePath.getParent().toString() + File.separator + NOME_ARQUIVO_FINAL);
 		} else {
 			filePathNovoArquivo = Paths.get(NOME_ARQUIVO_FINAL);
 		}
-		
+
 		try (Writer writer = Files.newBufferedWriter(filePathNovoArquivo)) {
 			logger.info("Gerando arquivo final...");
-			
+
 			final CustomMappingCsvContaBean<ContaBean> mappingStrategy = new CustomMappingCsvContaBean<>();
 			mappingStrategy.setType(ContaBean.class);
 
@@ -100,7 +105,7 @@ public class CsvContaService {
 			beanToCsv.write(infoContas);
 
 			logger.info("Arquivo gerado com sucesso \"{}\"", filePathNovoArquivo.toAbsolutePath());
-		} catch(IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+		} catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
 			logger.error("Falha ao gerar arquivo!");
 			e.printStackTrace();
 		}
